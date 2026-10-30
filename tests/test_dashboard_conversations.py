@@ -6,7 +6,7 @@ import json
 import sqlite3
 
 from tests.test_dashboard_signals import client  # noqa: F401  (fixture)
-from harvey.state import StateManager
+from plugged.state import StateManager
 
 
 def _sql(db, query, params=()):

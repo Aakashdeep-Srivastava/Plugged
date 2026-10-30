@@ -20,31 +20,31 @@ RUN pip install --no-cache-dir -r requirements.txt \
     && rm -rf /var/lib/apt/lists/* /root/.cache
 
 # Match the checkout owner on Linux; remain non-root.
-ARG HARVEY_UID=1000
-ARG HARVEY_GID=1000
-RUN test "$HARVEY_UID" -gt 0 && test "$HARVEY_GID" -gt 0 \
-    && groupadd --gid "$HARVEY_GID" harvey \
-    && useradd --create-home --uid "$HARVEY_UID" --gid "$HARVEY_GID" harvey \
+ARG PLUGGED_UID=1000
+ARG PLUGGED_GID=1000
+RUN test "$PLUGGED_UID" -gt 0 && test "$PLUGGED_GID" -gt 0 \
+    && groupadd --gid "$PLUGGED_GID" plugged \
+    && useradd --create-home --uid "$PLUGGED_UID" --gid "$PLUGGED_GID" plugged \
     && mkdir -p /app/data \
-    && chown -R harvey:harvey /app /ms-playwright
+    && chown -R plugged:plugged /app /ms-playwright
 
 # Copy project (config/prompts are typically bind-mounted over these at runtime)
-COPY --chown=harvey:harvey harvey/ harvey/
-COPY --chown=harvey:harvey prompts/ prompts/
-COPY --chown=harvey:harvey skills/ skills/
-COPY --chown=harvey:harvey harvey.yaml .
+COPY --chown=plugged:plugged plugged/ plugged/
+COPY --chown=plugged:plugged prompts/ prompts/
+COPY --chown=plugged:plugged skills/ skills/
+COPY --chown=plugged:plugged plugged.yaml .
 
-USER harvey
-ENV PATH="/home/harvey/.local/bin:${PATH}"
+USER plugged
+ENV PATH="/home/plugged/.local/bin:${PATH}"
 
 # Claude Code CLI, installed as the runtime user so ~/.local/bin is correct.
 # Download separately so fetch failures cannot be hidden by a shell pipeline.
-# Fail the build if installation or Harvey's CLI isolation check fails.
+# Fail the build if installation or PLUGGED's CLI isolation check fails.
 RUN installer="$(mktemp)" \
     && curl -fsSL https://claude.ai/install.sh -o "$installer" \
     && bash "$installer" \
     && rm "$installer" \
-    && python -c "from harvey.claude_runtime import check_cli; print(check_cli())"
+    && python -c "from plugged.claude_runtime import check_cli; print(check_cli())"
 
 # Healthy = the dashboard is accepting connections on its loopback port. The
 # heartbeat loop is started from the dashboard on demand, so database activity
@@ -54,6 +54,6 @@ HEALTHCHECK --interval=1m --timeout=10s --start-period=1m --retries=3 \
 
 # WebUI first: `docker run` serves the dashboard; it starts/stops the
 # heartbeat loop itself. Any arguments replace the default command, so
-# `docker compose run --rm harvey setup` runs the setup wizard.
-ENTRYPOINT ["python", "-m", "harvey"]
+# `docker compose run --rm plugged setup` runs the setup wizard.
+ENTRYPOINT ["python", "-m", "plugged"]
 CMD ["dashboard"]

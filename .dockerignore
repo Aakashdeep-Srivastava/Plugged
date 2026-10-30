@@ -3,9 +3,9 @@
 **
 !Dockerfile
 !requirements.txt
-!harvey.yaml
-!harvey/
-!harvey/**
+!plugged.yaml
+!plugged/
+!plugged/**
 !prompts/
 !prompts/**
 !skills/

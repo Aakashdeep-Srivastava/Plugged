@@ -1,4 +1,4 @@
-"""Prospects the Writer can't use must not stop Harvey from prospecting.
+"""Prospects the Writer can't use must not stop PLUGGED from prospecting.
 
 The Writer only drafts for verified or risky addresses; a guessed, invalid or
 missing email leaves the prospect 'new'. The heartbeat used to count every
@@ -11,9 +11,9 @@ from types import SimpleNamespace
 import pytest
 import pytest_asyncio
 
-from harvey.main import decide_next_action
-from harvey.models.prospect import Prospect
-from harvey.state import StateManager
+from plugged.main import decide_next_action
+from plugged.models.prospect import Prospect
+from plugged.state import StateManager
 
 CONFIG = SimpleNamespace(channels=SimpleNamespace(email=SimpleNamespace(
     provider="gmail", require_approval=True)))
@@ -66,9 +66,9 @@ async def age_all(state, days):
 @pytest.mark.asyncio
 async def test_a_day_of_unusable_prospects_pauses_spending_and_says_why(state):
     # With no usable email at all (say, no verifier key), prospecting every
-    # cycle would burn search and verifier credits on people Harvey can
+    # cycle would burn search and verifier credits on people PLUGGED can
     # never email. A day's worth pauses it, and status explains why.
-    from harvey.main import PROSPECT_BACKLOG, unusable_backlog_notice
+    from plugged.main import PROSPECT_BACKLOG, unusable_backlog_notice
     for n in range(PROSPECT_BACKLOG):
         await add(state, n, f"p{n}@co{n}.test", "guess")
     summary = await state.get_state_summary()
@@ -81,7 +81,7 @@ async def test_a_day_of_unusable_prospects_pauses_spending_and_says_why(state):
 async def test_the_pause_never_becomes_permanent(state):
     # Nothing re-checks a guessed address, so an all-time count would stop
     # Scout for good. Once the guesses are a day old, prospecting resumes.
-    from harvey.main import PROSPECT_BACKLOG, unusable_backlog_notice
+    from plugged.main import PROSPECT_BACKLOG, unusable_backlog_notice
     for n in range(PROSPECT_BACKLOG + 10):
         await add(state, n, f"p{n}@co{n}.test", "guess")
     await age_all(state, days=2)
@@ -106,7 +106,7 @@ async def test_old_guesses_do_not_stop_a_mixed_setup_returning_to_prospecting(st
 
 @pytest.mark.asyncio
 async def test_no_backlog_notice_while_things_are_moving(state):
-    from harvey.main import unusable_backlog_notice
+    from plugged.main import unusable_backlog_notice
     await add(state, 1, "p1@co1.test", "guess")
     assert unusable_backlog_notice(await state.get_state_summary()) == ""
     await add(state, 2, "p2@co2.test", "verified")

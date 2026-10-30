@@ -40,7 +40,7 @@ When an agent runs, it calls `brain.load_skills_for_agent("agent_name")` which c
 
 ## Auto-Generated Skills
 
-These are created by `harvey train <url>` and are specific to your product:
+These are created by `plugged train <url>` and are specific to your product:
 
 - **`product_knowledge.md`** — Features, benefits, pricing, use cases, pain points, buying triggers
 - **`competitive_intel.md`** — Battle cards for each competitor, differentiation angles, migration paths
@@ -49,4 +49,4 @@ These are created by `harvey train <url>` and are specific to your product:
 
 1. Edit any `.md` file in this directory
 2. Changes take effect on the next heartbeat cycle (no restart needed)
-3. To add a new skill, create the file and add it to the `skill_map` in `harvey/brain.py`
+3. To add a new skill, create the file and add it to the `skill_map` in `plugged/brain.py`

@@ -3,13 +3,13 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "harvey"
-version = "0.3.0"
-description = "Autonomous AI sales agent. Always Be Closing."
+name = "plugged"
+version = "0.1.0"
+description = "PLUGGED — autonomous cultural partnership intelligence agent, powered by Qloo. Unexpected collabs. Cultural receipts."
 readme = "README.md"
 requires-python = ">=3.11"
 license = "MIT"
-keywords = ["sales", "ai-agent", "cold-email", "prospecting", "autonomous-agent", "claude"]
+keywords = ["qloo", "cultural-intelligence", "brand-partnerships", "ai-agent", "autonomous-agent", "claude"]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
@@ -32,6 +32,7 @@ dependencies = [
     "pytz>=2024.1",
     "fastapi>=0.115,<1",
     "uvicorn>=0.34,<1",
+    "anthropic>=0.40,<1",
 ]
 
 [project.optional-dependencies]
@@ -40,18 +41,18 @@ dev = [
     "pytest-asyncio>=0.23,<1",
 ]
 
+# PLUGGED builds on Harvey by ethanplusai (MIT). This points to the upstream
+# project for attribution, not a claim that PLUGGED is hosted there.
 [project.urls]
-Homepage = "https://github.com/ethanplusai/harvey"
-Issues = "https://github.com/ethanplusai/harvey/issues"
-Changelog = "https://github.com/ethanplusai/harvey/blob/main/CHANGELOG.md"
+"Upstream (Harvey, MIT)" = "https://github.com/ethanplusai/harvey"
 
 [project.scripts]
-harvey = "harvey.cli:main"
+plugged = "plugged.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["harvey*"]
+include = ["plugged*"]
 
 # The dashboard's HTML/CSS/JS are real files served from disk, and its fonts
 # are vendored so a local tool renders correctly with the network off.
 [tool.setuptools.package-data]
-harvey = ["web/*", "web/fonts/*"]
+plugged = ["web/*", "web/fonts/*", "web/icons/*"]

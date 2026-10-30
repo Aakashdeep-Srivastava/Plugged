@@ -1,0 +1,14 @@
+{
+  "name": "plugged-icons",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Generate PLUGGED favicons and app icons from the master PNG via sharp.",
+  "type": "module",
+  "scripts": {
+    "build": "node generate.mjs"
+  },
+  "dependencies": {
+    "png-to-ico": "^2.1.8",
+    "sharp": "^0.33.5"
+  }
+}

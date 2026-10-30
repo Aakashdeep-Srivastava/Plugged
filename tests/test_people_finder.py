@@ -10,8 +10,8 @@ like team pages, and addresses hidden from scrapers.
 
 import pytest
 
-from harvey.collectors import people
-from harvey.collectors.profile import ProfileCollector
+from plugged.collectors import people
+from plugged.collectors.profile import ProfileCollector
 
 detect_people = ProfileCollector(state=None).detect_people
 

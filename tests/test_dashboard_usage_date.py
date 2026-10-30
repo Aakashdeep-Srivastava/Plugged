@@ -7,8 +7,8 @@ from datetime import date, timedelta
 
 import pytest
 
-import harvey.dashboard as dash
-from harvey.state import StateManager
+import plugged.dashboard as dash
+from plugged.state import StateManager
 from tests.test_dashboard_signals import client  # noqa: F401
 
 

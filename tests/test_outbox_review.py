@@ -1,6 +1,6 @@
 """The Outbox review desk: the facts behind each draft, and editing it.
 
-Reviewing a cold email means checking its claims against what Harvey actually
+Reviewing a cold email means checking its claims against what PLUGGED actually
 found. The desk shows that next to the draft, and lets a reviewer fix a draft
 that is nearly right instead of throwing the lead away.
 """
@@ -14,21 +14,21 @@ import aiosqlite
 import pytest
 from fastapi.testclient import TestClient
 
-import harvey.dashboard as dash
-from harvey.config import DEFAULT_OPT_OUT_LINE as LINE
-from harvey.models import Company
-from harvey.models.campaign import Campaign
-from harvey.models.prospect import Prospect
-from harvey.signals import seed_signal_catalog
-from harvey.state import StateManager
+import plugged.dashboard as dash
+from plugged.config import DEFAULT_OPT_OUT_LINE as LINE
+from plugged.models import Company
+from plugged.models.campaign import Campaign
+from plugged.models.prospect import Prospect
+from plugged.signals import seed_signal_catalog
+from plugged.state import StateManager
 
 
 @pytest.fixture
 def client(monkeypatch):
     with tempfile.TemporaryDirectory() as tmp:
-        db = Path(tmp) / "harvey.db"
+        db = Path(tmp) / "plugged.db"
         monkeypatch.setattr(dash, "DB_PATH", db)
-        monkeypatch.setattr(dash, "WEB_DIR", Path(__file__).resolve().parent.parent / "harvey" / "web")
+        monkeypatch.setattr(dash, "WEB_DIR", Path(__file__).resolve().parent.parent / "plugged" / "web")
         dash.token_store.configure(Path(tmp) / "data" / "dashboard-token")
         token = dash.token_store.get()
         with TestClient(dash.app, base_url="http://127.0.0.1:5555",

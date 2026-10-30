@@ -2,7 +2,7 @@
 
 from types import SimpleNamespace
 
-from harvey.agents.sender import Sender
+from plugged.agents.sender import Sender
 
 
 def _render(text, company):

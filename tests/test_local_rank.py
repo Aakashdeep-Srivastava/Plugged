@@ -13,11 +13,11 @@ import httpx
 import pytest
 import pytest_asyncio
 
-from harvey.collectors import discover as D
-from harvey.config import EnvConfig, load_config
-from harvey.models import Company
-from harvey.signals import SIGNAL_CATALOG, seed_signal_catalog
-from harvey.state import StateManager
+from plugged.collectors import discover as D
+from plugged.config import EnvConfig, load_config
+from plugged.models import Company
+from plugged.signals import SIGNAL_CATALOG, seed_signal_catalog
+from plugged.state import StateManager
 
 ENV = {"dataforseo_login": "u", "dataforseo_password": "p"}
 REAL_CLIENT = httpx.AsyncClient
@@ -298,7 +298,7 @@ def _install(monkeypatch, handler):
     real = REAL_CLIENT
     monkeypatch.setattr(D.httpx, "AsyncClient", lambda **kw: real(
         transport=httpx.MockTransport(handler), **kw))
-    monkeypatch.setattr("harvey.config.load_env", lambda: EnvConfig(
+    monkeypatch.setattr("plugged.config.load_env", lambda: EnvConfig(
         dataforseo_login="dummy", dataforseo_password="dummy"))
 
 

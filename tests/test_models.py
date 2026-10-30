@@ -1,9 +1,9 @@
 """Tests for data models."""
 
-from harvey.models.prospect import Prospect
-from harvey.models.campaign import Campaign, EmailStep
-from harvey.models.company import Company
-from harvey.models.conversation import Conversation, Message
+from plugged.models.prospect import Prospect
+from plugged.models.campaign import Campaign, EmailStep
+from plugged.models.company import Company
+from plugged.models.conversation import Conversation, Message
 
 
 def test_prospect_is_valid():
@@ -48,7 +48,7 @@ def test_company_defaults():
 
 def test_conversation_thread_json_round_trip():
     msgs = [
-        Message(sender="harvey", content="Hi there"),
+        Message(sender="plugged", content="Hi there"),
         Message(sender="prospect", content="Interested!"),
     ]
     convo = Conversation(
@@ -58,5 +58,5 @@ def test_conversation_thread_json_round_trip():
     json_str = convo.thread_json()
     restored = Conversation.thread_from_json(json_str)
     assert len(restored) == 2
-    assert restored[0].sender == "harvey"
+    assert restored[0].sender == "plugged"
     assert restored[1].content == "Interested!"
