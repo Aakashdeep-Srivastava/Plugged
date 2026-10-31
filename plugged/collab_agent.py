@@ -285,6 +285,7 @@ Return JSON: {{"query_more": true|false, "category": "a Qloo-friendly category n
             table.append({
                 "id": e.id, "name": e.name, "category": c["category"],
                 "qloo_affinity": e.affinity, "qloo_tags": e.tags[:8],
+                "qloo_contributors": e.contributors[:4],  # which seeds drove it
                 "top": i < TOP_CONCEPTS,
             })
 
@@ -339,6 +340,7 @@ Return JSON: {{"candidates": [{{"id": "...", "cultural_rationale": "...",
                 "qloo_affinity": e.affinity,
                 "qloo_tags": e.tags[:10],
                 "qloo_popularity": e.popularity,
+                "qloo_contributors": e.contributors[:6],
                 "evidence": e.summary(),
                 # Model opinion — clearly labelled as such.
                 "cultural_rationale": str(a.get("cultural_rationale") or ""),

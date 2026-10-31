@@ -109,7 +109,7 @@ class QlooEntity:
     """
 
     __slots__ = ("id", "name", "types", "entity_type", "affinity",
-                 "popularity", "tags", "properties", "raw")
+                 "popularity", "tags", "properties", "contributors", "raw")
 
     def __init__(self, data: dict):
         self.raw = data if isinstance(data, dict) else {}
@@ -124,6 +124,9 @@ class QlooEntity:
         self.tags = _tag_names(self.raw.get("tags"))
         self.properties = self.raw.get("properties") if isinstance(
             self.raw.get("properties"), dict) else {}
+        # Qloo explainability (when requested): which seed entities drove this
+        # result, with normalized influence. Evidence, never invented.
+        self.contributors = _contributors_of(self.raw)
 
     @property
     def description(self) -> str:
@@ -146,6 +149,7 @@ class QlooEntity:
             "affinity": self.affinity,
             "popularity": self.popularity,
             "tags": self.tags[:8],
+            "contributors": self.contributors[:6],
             "description": self.description[:280],
         }
 
@@ -172,6 +176,34 @@ def _affinity_of(entity: dict) -> float | None:
     if isinstance(entity.get("affinity"), (int, float)):
         return float(entity["affinity"])
     return None
+
+
+def _contributors_of(entity: dict) -> list[dict]:
+    """Normalize Qloo's explainability into [{entity_id, influence}], or [].
+
+    With feature.explainability=true, insights entities carry a
+    ``query.explainability`` mapping of seed-entity id -> normalized influence.
+    Shapes vary, so parse defensively and surface only what Qloo gave. A
+    warning (no contributors) yields []."""
+    q = entity.get("query")
+    exp = q.get("explainability") if isinstance(q, dict) else None
+    out = []
+    if isinstance(exp, dict):
+        # {"signal.interests.entities": {"<id>": 0.62, ...}} or {"<id>": 0.62}
+        inner = exp.get("signal.interests.entities")
+        mapping = inner if isinstance(inner, dict) else exp
+        for ent_id, influence in mapping.items():
+            if isinstance(influence, (int, float)):
+                out.append({"entity_id": str(ent_id), "influence": float(influence)})
+    elif isinstance(exp, list):
+        for item in exp:
+            if isinstance(item, dict):
+                inf = item.get("influence") or item.get("normalized_influence")
+                if isinstance(inf, (int, float)):
+                    out.append({"entity_id": str(item.get("entity_id") or ""),
+                                "influence": float(inf)})
+    out.sort(key=lambda c: c["influence"], reverse=True)
+    return out
 
 
 def _tag_names(tags) -> list[str]:
@@ -218,6 +250,7 @@ class QlooClient:
                  timeout: float = DEFAULT_TIMEOUT, transport=None):
         self.api_key = (api_key or os.getenv("QLOO_API_KEY", "")).strip()
         self.base_url = (base_url or os.getenv("QLOO_API_BASE", "")
+                         or os.getenv("QLOO_BASE_URL", "")  # report/common alias
                          or DEFAULT_BASE_URL).rstrip("/")
         self.timeout = timeout
         # Tests inject an httpx.MockTransport here; production leaves it None.
@@ -290,6 +323,7 @@ class QlooClient:
         signal_tags: list[str] | None = None,
         filter_tags: list[str] | None = None,
         take: int = 20,
+        explainability: bool = True,
         extra_params: dict | None = None,
     ) -> list[QlooEntity]:
         """The cross-category engine: entities in ``filter_type`` that Qloo
@@ -297,6 +331,8 @@ class QlooClient:
 
         ``filter_type`` is a Qloo entity-type URN or a friendly name
         (``resolve_entity_type`` maps "music" -> ``urn:entity:artist`` etc.).
+        With ``explainability`` (default on), each result carries which seed
+        entities drove it (``contributors``) — the "why" behind a match.
         Returns entities carrying Qloo's ``affinity``; an empty list means Qloo
         found no signal (often because a param doesn't apply to this type).
         """
@@ -308,6 +344,8 @@ class QlooClient:
             "filter.tags": ",".join(filter_tags or []),
             "take": take,
         }
+        if explainability:
+            params["feature.explainability"] = "true"
         if extra_params:
             params.update(extra_params)
         data = await self._get("/v2/insights", params)

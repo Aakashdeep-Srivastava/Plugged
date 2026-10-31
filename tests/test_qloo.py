@@ -126,6 +126,30 @@ async def test_auth_and_rate_limit_errors():
         await client_returning({"error": "slow"}, status=429).search("x")
 
 
+@pytest.mark.asyncio
+async def test_insights_requests_and_parses_explainability():
+    captured = {}
+
+    def handler(request):
+        captured["url"] = str(request.url)
+        return httpx.Response(200, json={"results": {"entities": [
+            {"entity_id": "MOCK-ARTIST-1", "name": "The Fictional Band",
+             "types": ["urn:entity:artist"],
+             "query": {"affinity": 0.88,
+                       "explainability": {"signal.interests.entities":
+                                          {"SEED-A": 0.7, "SEED-B": 0.2}}}},
+        ]}})
+
+    c = QlooClient(api_key="MOCK-KEY", transport=httpx.MockTransport(handler))
+    ents = await c.insights("music", signal_entities=["SEED-A", "SEED-B"])
+    # Explainability was requested...
+    assert "feature.explainability=true" in captured["url"]
+    # ...and parsed into contributors, sorted by influence, nothing invented.
+    contribs = ents[0].contributors
+    assert contribs[0] == {"entity_id": "SEED-A", "influence": 0.7}
+    assert contribs[1]["entity_id"] == "SEED-B"
+
+
 def test_resolve_entity_type_maps_friendly_names():
     assert resolve_entity_type("music") == "urn:entity:artist"
     assert resolve_entity_type("hospitality") == "urn:entity:place"

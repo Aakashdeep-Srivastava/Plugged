@@ -118,12 +118,25 @@ async def collab(request: Request):
     if reason:
         return JSONResponse({"error": reason}, status_code=429)
 
-    if not os.getenv("ANTHROPIC_API_KEY", "").strip():
-        return JSONResponse({"error": "The demo isn't configured (no model key)."},
-                            status_code=503)
-    if not os.getenv("QLOO_API_KEY", "").strip():
-        return JSONResponse({"error": "The demo isn't configured (no Qloo key)."},
-                            status_code=503)
+    # Seeded-demo fallback: when a key is missing (or {"demo": true} is sent),
+    # stream a CLEARLY-LABELED illustrative result so the workflow is always
+    # demonstrable. Never presented as live Qloo data.
+    has_keys = (os.getenv("ANTHROPIC_API_KEY", "").strip()
+                and os.getenv("QLOO_API_KEY", "").strip())
+    want_demo = (isinstance(body, dict) and body.get("demo") is True) or not has_keys
+    if want_demo:
+        from plugged.demo_fixtures import seeded_demo_events, seeded_demo_result
+
+        async def seeded_stream():
+            for ev in seeded_demo_events():
+                yield json.dumps({"type": "event", **ev}, ensure_ascii=False) + "\n"
+                await asyncio.sleep(0.25)  # let the activity feed animate
+            yield json.dumps({"type": "result", "result": seeded_demo_result(brief)},
+                             ensure_ascii=False) + "\n"
+
+        return StreamingResponse(seeded_stream(), media_type="application/x-ndjson",
+                                 headers={"Cache-Control": "no-store",
+                                          "X-Accel-Buffering": "no"})
 
     from plugged.api_brain import AnthropicAPIBrain
     from plugged.collab_agent import CollabAgent

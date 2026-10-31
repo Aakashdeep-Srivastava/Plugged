@@ -34,8 +34,16 @@ def test_collab_rejects_overlong_brief():
     assert client.post("/api/collab", json={"brief": "x" * 5000}).status_code == 400
 
 
-def test_collab_503_without_keys(monkeypatch):
+def test_collab_falls_back_to_seeded_demo_without_keys(monkeypatch):
+    import json
     monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
     monkeypatch.delenv("QLOO_API_KEY", raising=False)
     r = client.post("/api/collab", json={"brief": "A real brief here."})
-    assert r.status_code == 503
+    assert r.status_code == 200
+    assert "application/x-ndjson" in r.headers["content-type"]
+    msgs = [json.loads(line) for line in r.text.splitlines() if line.strip()]
+    result = next(m["result"] for m in msgs if m["type"] == "result")
+    # Clearly labeled as a demo fixture, never as live Qloo data.
+    assert result["mode"] == "seeded-demo"
+    assert "NOT live Qloo data" in result["note"]
+    assert len(result["candidates"]) >= 3

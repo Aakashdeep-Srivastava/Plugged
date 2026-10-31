@@ -2706,6 +2706,10 @@ function collabCard(c) {
       '</div><div class="hint">Qloo affinity</div>'
     : '<div class="hint">no Qloo affinity</div>') + '</div></div>';
   if (tags) h += '<div style="margin-top:10px">' + tags + '</div>';
+  const contribs = c.qloo_contributors || [];
+  if (contribs.length && contribs[0] && contribs[0].influence != null)
+    h += '<div class="hint" style="margin-top:8px">Why it surfaced (Qloo explainability): ' +
+      'top seed influence ' + Math.round(contribs[0].influence * 100) + '%</div>';
   if (c.cultural_rationale)
     h += '<div style="margin-top:12px"><div class="hint">Cultural fit · evidence via Qloo</div>' +
       escHtml(c.cultural_rationale) + '</div>';

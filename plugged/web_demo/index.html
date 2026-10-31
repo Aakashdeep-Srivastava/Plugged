@@ -200,7 +200,10 @@ function renderResult(r){
   document.getElementById('disclaimer').textContent = r.disclaimer || '';
   if(r.error){ out.innerHTML = '<div class="err">'+esc(r.error)+'</div>'; return; }
   let html = '';
-  if(r.note){ html += '<div class="note">'+esc(r.note)+'</div>'; }
+  if(r.mode === 'seeded-demo'){
+    html += '<div class="note" style="border-color:var(--insight);color:var(--text)">' +
+      '<b style="color:var(--insight)">● DEMO MODE</b> — ' + esc(r.note) + '</div>';
+  } else if(r.note){ html += '<div class="note">'+esc(r.note)+'</div>'; }
   const cands = r.candidates || [];
   if(cands.length){
     html += '<div class="results">' + cands.map(card).join('') + '</div>';
@@ -222,6 +225,11 @@ function card(c){
       : '<div class="l">no Qloo<br>affinity</div>') +'</div></div>';
   if(aff!=null){ html += '<div class="bar"><i style="width:'+aff+'%"></i></div>'; }
   if(tags){ html += '<div class="tags">'+tags+'</div>'; }
+  const contribs = (c.qloo_contributors||[]);
+  if(contribs.length && contribs[0] && contribs[0].influence!=null){
+    html += '<div class="via" style="margin-top:8px">Why it surfaced (Qloo explainability): '+
+      'your taste signal drove this match — top seed influence '+Math.round(contribs[0].influence*100)+'%</div>';
+  }
 
   if(c.cultural_rationale){
     html += '<div class="block culture"><h4>Cultural fit <span class="via">· evidence via Qloo</span></h4>'+
