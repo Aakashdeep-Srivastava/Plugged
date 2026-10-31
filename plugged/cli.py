@@ -942,6 +942,43 @@ def cmd_sending(args):
     asyncio.run(_run())
 
 
+def cmd_qloo(args):
+    """Check the Qloo connection: resolves a known entity and reports status."""
+    from plugged.integrations.qloo import (
+        QlooAuthError, QlooClient, QlooConfigError, QlooError, QlooRateLimitError,
+    )
+
+    async def _run():
+        client = QlooClient()
+        if not client.configured:
+            print("\n  QLOO_API_KEY is not set. Add it to .env, then re-run "
+                  "`plugged qloo test`.\n")
+            sys.exit(1)
+        probe = args.query or "Nike"
+        print(f"\n  Qloo: {client.base_url}")
+        print(f"  Testing with a search for \"{probe}\"...")
+        try:
+            hits = await client.search(probe, take=3)
+        except QlooConfigError:
+            print("  No API key."); sys.exit(1)
+        except QlooAuthError:
+            print("  ✗ Key rejected (401/403). Check QLOO_API_KEY is a hackathon key.\n")
+            sys.exit(1)
+        except QlooRateLimitError:
+            print("  ✗ Rate/quota limit hit — the key works, but slow down.\n")
+            sys.exit(1)
+        except QlooError as e:
+            print(f"  ✗ Could not reach Qloo: {e}\n"); sys.exit(1)
+        if hits:
+            print(f"  ✓ Connected. Qloo returned {len(hits)} entities, e.g. "
+                  f"{hits[0].name} ({hits[0].entity_type}).\n")
+        else:
+            print("  ✓ Connected (the key works), but that search returned nothing. "
+                  "Try `plugged qloo test --query \"Spotify\"`.\n")
+
+    asyncio.run(_run())
+
+
 def cmd_collab(args):
     """Find cultural collaboration partners for a brand brief (PLUGGED's core).
 
@@ -1044,6 +1081,13 @@ def main():
                      "streetwear brand looking for an unexpected music collab\"")
     sub.add_argument("--json", action="store_true", help="Print raw JSON output")
     sub.set_defaults(func=cmd_collab)
+
+    # plugged qloo test  — verify the Qloo API key/connection
+    sub = subparsers.add_parser("qloo", help="Check the Qloo API connection")
+    sub.add_argument("qloo_action", nargs="?", default="test", choices=["test"],
+                     help="test (default): resolve a known entity")
+    sub.add_argument("--query", default="", help="Entity name to probe (default: Nike)")
+    sub.set_defaults(func=cmd_qloo)
 
     # plugged install
     sub = subparsers.add_parser("install", help="Install dependencies")
