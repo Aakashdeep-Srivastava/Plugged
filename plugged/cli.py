@@ -942,6 +942,88 @@ def cmd_sending(args):
     asyncio.run(_run())
 
 
+def cmd_collab(args):
+    """Find cultural collaboration partners for a brand brief (PLUGGED's core).
+
+    Uses Qloo for the cultural signal and a model brain for reasoning: the
+    Anthropic API when ANTHROPIC_API_KEY is set, otherwise the local Claude
+    subscription (the same brain the heartbeat uses).
+    """
+    import json as _json
+    from plugged.collab_agent import CollabAgent
+    from plugged.config import load_env
+    from plugged.integrations.qloo import QlooClient
+
+    env = load_env()
+    qloo = QlooClient()
+    if not qloo.configured:
+        print("\n  Set QLOO_API_KEY in .env first — PLUGGED needs Qloo for the "
+              "cultural signal.\n")
+        sys.exit(1)
+
+    state = None
+    if env.anthropic_api_key:
+        from plugged.api_brain import AnthropicAPIBrain
+        brain = AnthropicAPIBrain()
+        brain_name = f"Anthropic API ({brain.model})"
+    else:
+        from plugged.brain import Brain
+        from plugged.config import load_brain_config
+        from plugged.state import StateManager
+        state = StateManager()
+        brain = Brain(state, load_brain_config())
+        brain_name = f"{brain.provider_label} (local subscription)"
+
+    async def _run():
+        if state is not None:
+            await state.init_db()
+        print(f"\n  PLUGGED — thinking with {brain_name}, culture from Qloo.\n")
+
+        async def on_event(e):
+            print(f"  · {e['step']}: {e['detail']}")
+
+        result = await CollabAgent(brain, qloo).run(args.brief, on_event=on_event)
+        if args.json:
+            print(_json.dumps(result, indent=2, ensure_ascii=False))
+            return
+        _print_collab(result)
+
+    asyncio.run(_run())
+
+
+def _print_collab(result: dict):
+    if result.get("error"):
+        print(f"\n  {result['error']}\n")
+        return
+    cands = result.get("candidates") or []
+    print()
+    if result.get("note"):
+        print(f"  Note: {result['note']}\n")
+    for i, c in enumerate(cands, 1):
+        aff = c.get("qloo_affinity")
+        aff_s = f"{round(aff * 100)}% Qloo affinity" if aff is not None else "no Qloo affinity"
+        cat = (c.get("category") or c.get("entity_type") or "").replace("urn:entity:", "")
+        print(f"  {i}. {c['name']}  [{cat}]  — {aff_s}")
+        if c.get("qloo_tags"):
+            print(f"     tags (via Qloo): {', '.join(c['qloo_tags'][:8])}")
+        if c.get("cultural_rationale"):
+            print(f"     cultural fit: {c['cultural_rationale']}")
+        f = c.get("business_feasibility") or {}
+        if f.get("assessment"):
+            print(f"     feasibility ({f.get('confidence', '?')}, PLUGGED's view): "
+                  f"{f['assessment']}")
+        if f.get("unknowns"):
+            print(f"       unknowns: {'; '.join(f['unknowns'])}")
+        if c.get("concept"):
+            print(f"     concept: {c['concept']}")
+        if c.get("outreach_draft"):
+            print(f"     outreach draft (awaiting approval):\n       "
+                  + c["outreach_draft"].replace("\n", "\n       "))
+        print()
+    if result.get("disclaimer"):
+        print(f"  {result['disclaimer']}\n")
+
+
 def main():
     from plugged.textio import utf8_stdio
     utf8_stdio()
@@ -950,9 +1032,18 @@ def main():
 
     parser = argparse.ArgumentParser(
         prog="plugged",
-        description="PLUGGED — Autonomous AI Sales Agent. Always Be Closing.",
+        description="PLUGGED — autonomous cultural partnership intelligence, "
+                    "powered by Qloo. Unexpected collabs. Cultural receipts.",
     )
     subparsers = parser.add_subparsers(dest="command")
+
+    # plugged collab "<brand brief>"  — PLUGGED's core workflow
+    sub = subparsers.add_parser(
+        "collab", help="Find cultural collaboration partners for a brand brief")
+    sub.add_argument("brief", help="A short brand brief, e.g. \"We're a "
+                     "streetwear brand looking for an unexpected music collab\"")
+    sub.add_argument("--json", action="store_true", help="Print raw JSON output")
+    sub.set_defaults(func=cmd_collab)
 
     # plugged install
     sub = subparsers.add_parser("install", help="Install dependencies")
@@ -1120,9 +1211,9 @@ def main():
         parser.print_help()
         print("\n  Quick start:")
         print("    plugged install   — Install dependencies")
-        print("    plugged setup     — Configure PLUGGED (first time)")
-        print("    plugged run       — Start closing deals")
+        print('    plugged collab "<brand brief>"  — Find cultural collab partners (Qloo)')
         print("    plugged dashboard — Open the web dashboard")
+        print("    plugged setup     — Configure the outreach pipeline (optional)")
         print()
         sys.exit(0)
 

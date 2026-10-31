@@ -1,0 +1,16 @@
+# Keep the serverless bundle small and the build fast. Exclude heavy, non-code,
+# or local-only paths. ALL of plugged/ source stays (it's tiny; the weight is in
+# dependencies, and excluding individual modules risks breaking an import).
+.venv/
+node_modules/
+tools/
+tests/
+docs/
+data/
+.git/
+.github/
+.claude/
+.agents/
+*.db
+harvey.local.yaml
+plugged.local.yaml

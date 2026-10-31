@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PLUGGED — Unexpected collabs. Cultural receipts.</title>
+<meta name="description" content="PLUGGED finds unexpected but culturally relevant collaboration partners for a brand, explains the fit with real Qloo taste data, and drafts a partnership proposal for human approval.">
+<meta name="theme-color" content="#101014">
+<link rel="icon" href="/static/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/favicon-32x32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/static/apple-touch-icon.png">
+<meta property="og:title" content="PLUGGED — Unexpected collabs. Cultural receipts.">
+<meta property="og:description" content="Cultural partnership intelligence powered by Qloo.">
+<meta property="og:image" content="/static/og-image.png">
+<meta property="og:type" content="website">
+<style>
+  :root{
+    --bg:#101014; --surface:#17171C; --surface-2:#1E1E24; --line:#2A2A32;
+    --text:#FFFFFF; --text-2:#A8A8B3; --text-3:#70707A;
+    --lime:#C7FB54; --lime-dim:#9BC73F;
+    --good:#5CCB8F; --wait:#F0B84F; --bad:#FF7A85;
+    --r:14px; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--text);font-family:var(--sans);
+    font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
+    background-image:radial-gradient(900px 500px at 80% -10%, rgba(199,251,84,.08), transparent 60%);}
+  a{color:var(--lime)}
+  .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 80px}
+  header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  header img{width:34px;height:34px;border-radius:7px}
+  header h1{font-size:22px;font-weight:800;letter-spacing:.04em}
+  .tag{color:var(--lime);font-weight:600;font-size:13px;letter-spacing:.02em}
+  .sub{color:var(--text-2);margin:14px 0 24px;max-width:70ch}
+  .sub b{color:var(--text)}
+
+  .panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+  label.lbl{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;
+    color:var(--text-3);margin-bottom:8px;font-weight:700}
+  textarea{width:100%;min-height:92px;resize:vertical;background:var(--bg);color:var(--text);
+    border:1px solid var(--line);border-radius:10px;padding:12px 14px;font:inherit}
+  textarea:focus{outline:none;border-color:var(--lime)}
+  .row{display:flex;gap:12px;align-items:center;margin-top:12px;flex-wrap:wrap}
+  button.go{background:var(--lime);color:#101014;border:none;border-radius:10px;
+    padding:12px 20px;font-weight:800;font-size:15px;cursor:pointer;letter-spacing:.01em}
+  button.go:hover{background:#D4FC7A}
+  button.go:disabled{opacity:.5;cursor:not-allowed}
+  .chips{display:flex;gap:8px;flex-wrap:wrap}
+  .chip{font-size:12px;color:var(--text-2);background:var(--surface-2);border:1px solid var(--line);
+    border-radius:999px;padding:5px 11px;cursor:pointer}
+  .chip:hover{border-color:var(--lime);color:var(--text)}
+
+  .activity{margin-top:22px;display:none}
+  .activity.on{display:block}
+  .act-row{display:flex;gap:10px;align-items:flex-start;padding:7px 0;color:var(--text-2);font-size:13px}
+  .act-dot{width:7px;height:7px;border-radius:50%;background:var(--lime);margin-top:6px;flex:none;
+    box-shadow:0 0 0 4px rgba(199,251,84,.14)}
+  .act-row b{color:var(--text);font-weight:600;text-transform:capitalize}
+
+  .results{margin-top:26px;display:grid;gap:16px}
+  .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+    padding:18px;animation:rise .4s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .card-top{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}
+  .cand-name{font-size:19px;font-weight:750}
+  .cand-cat{color:var(--text-3);font-size:12px;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
+  .aff{text-align:right;flex:none}
+  .aff .n{font-size:24px;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums}
+  .aff .l{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
+  .bar{height:5px;background:var(--surface-2);border-radius:3px;overflow:hidden;margin-top:12px}
+  .bar>i{display:block;height:100%;background:var(--lime)}
+  .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+  .tags .t{font-size:11px;background:rgba(199,251,84,.1);color:var(--lime-dim);
+    border:1px solid rgba(199,251,84,.25);border-radius:6px;padding:3px 8px}
+  .block{margin-top:14px}
+  .block h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:5px}
+  .block.culture h4{color:var(--lime-dim)}
+  .via{font-size:10px;color:var(--text-3);font-style:italic}
+  .feas{background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:12px;margin-top:6px}
+  .conf{display:inline-block;font-size:11px;font-weight:700;border-radius:5px;padding:2px 7px;text-transform:uppercase}
+  .conf.low{background:rgba(255,122,133,.15);color:var(--bad)}
+  .conf.medium{background:rgba(240,184,79,.15);color:var(--wait)}
+  .conf.high{background:rgba(92,203,143,.15);color:var(--good)}
+  .conf.unknown{background:var(--line);color:var(--text-3)}
+  .unknowns{margin:8px 0 0 16px;color:var(--text-2);font-size:13px}
+  .concept{border-left:2px solid var(--lime);padding-left:12px}
+  .draft{background:var(--bg);border:1px dashed var(--line);border-radius:10px;padding:12px;margin-top:6px;
+    white-space:pre-wrap;font-size:13.5px;color:var(--text-2)}
+  .draft-head{display:flex;justify-content:space-between;align-items:center;margin-top:14px}
+  .pill{font-size:11px;color:var(--wait);background:rgba(240,184,79,.12);border:1px solid rgba(240,184,79,.3);
+    border-radius:999px;padding:3px 10px;font-weight:600}
+  .mini{background:var(--surface-2);border:1px solid var(--line);color:var(--text);border-radius:8px;
+    padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer}
+  .mini:hover{border-color:var(--lime)}
+  .note{color:var(--wait);background:rgba(240,184,79,.08);border:1px solid rgba(240,184,79,.25);
+    border-radius:10px;padding:12px 14px;margin-top:18px;font-size:13.5px}
+  .disclaimer{color:var(--text-3);font-size:12px;margin-top:26px;border-top:1px solid var(--line);padding-top:16px;max-width:80ch}
+  .err{color:var(--bad);background:rgba(255,122,133,.08);border:1px solid rgba(255,122,133,.3);
+    border-radius:10px;padding:12px 14px;margin-top:18px}
+  .foot{color:var(--text-3);font-size:12px;margin-top:40px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <img src="/static/logo-128.png" alt="">
+    <div>
+      <h1>PLUGGED</h1>
+      <div class="tag">Unexpected collabs. Cultural receipts.</div>
+    </div>
+  </header>
+
+  <p class="sub">Tell PLUGGED about your brand. It reads your audience's taste through
+    <b>Qloo</b>, hunts across <b>different</b> cultural categories for a surprising-but-aligned
+    partner, shows the <b>cultural receipts</b>, and drafts a proposal — <b>you</b> approve it.</p>
+
+  <div class="panel">
+    <label class="lbl" for="brief">Brand brief</label>
+    <textarea id="brief">We're a streetwear brand looking for an unexpected music, lifestyle, or hospitality collaboration.</textarea>
+    <div class="row">
+      <button class="go" id="go" onclick="findCollab()">Find my next collab</button>
+      <div class="chips" id="examples">
+        <span class="chip" onclick="setBrief(this)">Specialty coffee brand, design-led audience</span>
+        <span class="chip" onclick="setBrief(this)">Indie skincare label, Gen-Z, clean beauty</span>
+        <span class="chip" onclick="setBrief(this)">Craft brewery wanting a music or gaming tie-in</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="activity" id="activity"></div>
+  <div id="output"></div>
+
+  <p class="disclaimer" id="disclaimer"></p>
+  <p class="foot">PLUGGED builds on the open-source Harvey agent (MIT). Cultural data from Qloo.
+    This demo does not send any outreach.</p>
+</div>
+
+<script>
+function setBrief(el){ document.getElementById('brief').value = el.textContent.trim(); }
+
+function esc(s){ return String(s==null?'':s).replace(/[&<>"]/g, c => (
+  {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+async function findCollab(){
+  const btn = document.getElementById('go');
+  const brief = document.getElementById('brief').value.trim();
+  if(!brief) return;
+  btn.disabled = true; btn.textContent = 'Working…';
+  const act = document.getElementById('activity');
+  const out = document.getElementById('output');
+  const disc = document.getElementById('disclaimer');
+  act.className = 'activity on'; act.innerHTML = ''; out.innerHTML = ''; disc.textContent = '';
+
+  try{
+    const resp = await fetch('/api/collab', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({brief})
+    });
+    if(!resp.ok || !resp.body){ throw new Error('Request failed ('+resp.status+')'); }
+    const reader = resp.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    while(true){
+      const {value, done} = await reader.read();
+      if(done) break;
+      buf += dec.decode(value, {stream:true});
+      let nl;
+      while((nl = buf.indexOf('\n')) >= 0){
+        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl+1);
+        if(line) handleMsg(JSON.parse(line));
+      }
+    }
+  }catch(e){
+    out.innerHTML = '<div class="err">'+esc(e.message||'Something went wrong')+'</div>';
+  }finally{
+    btn.disabled = false; btn.textContent = 'Find my next collab';
+  }
+}
+
+function handleMsg(msg){
+  if(msg.type === 'event') addActivity(msg);
+  else if(msg.type === 'result') renderResult(msg.result);
+  else if(msg.type === 'error') document.getElementById('output').innerHTML =
+    '<div class="err">'+esc(msg.error)+'</div>';
+}
+
+function addActivity(e){
+  const act = document.getElementById('activity');
+  const row = document.createElement('div');
+  row.className = 'act-row';
+  row.innerHTML = '<span class="act-dot"></span><div><b>'+esc(e.step)+'</b> — '+esc(e.detail)+'</div>';
+  act.appendChild(row);
+}
+
+function renderResult(r){
+  const out = document.getElementById('output');
+  document.getElementById('disclaimer').textContent = r.disclaimer || '';
+  if(r.error){ out.innerHTML = '<div class="err">'+esc(r.error)+'</div>'; return; }
+  let html = '';
+  if(r.note){ html += '<div class="note">'+esc(r.note)+'</div>'; }
+  const cands = r.candidates || [];
+  if(cands.length){
+    html += '<div class="results">' + cands.map(card).join('') + '</div>';
+  }
+  out.innerHTML = html;
+}
+
+function card(c){
+  const aff = (c.qloo_affinity!=null) ? Math.round(c.qloo_affinity*100) : null;
+  const tags = (c.qloo_tags||[]).map(t => '<span class="t">'+esc(t)+'</span>').join('');
+  const f = c.business_feasibility || {};
+  const conf = (f.confidence||'unknown').toLowerCase();
+  const unknowns = (f.unknowns||[]).map(u => '<li>'+esc(u)+'</li>').join('');
+  let html = '<div class="card"><div class="card-top"><div>'+
+    '<div class="cand-name">'+esc(c.name)+'</div>'+
+    '<div class="cand-cat">'+esc((c.category||c.entity_type||'').replace('urn:entity:',''))+'</div></div>';
+  html += '<div class="aff">'+ (aff!=null
+      ? '<div class="n">'+aff+'</div><div class="l">Qloo affinity</div>'
+      : '<div class="l">no Qloo<br>affinity</div>') +'</div></div>';
+  if(aff!=null){ html += '<div class="bar"><i style="width:'+aff+'%"></i></div>'; }
+  if(tags){ html += '<div class="tags">'+tags+'</div>'; }
+
+  if(c.cultural_rationale){
+    html += '<div class="block culture"><h4>Cultural fit <span class="via">· evidence via Qloo</span></h4>'+
+      esc(c.cultural_rationale)+'</div>';
+  }
+  html += '<div class="block"><h4>Business feasibility <span class="via">· PLUGGED opinion, not Qloo</span></h4>'+
+    '<div class="feas"><span class="conf '+esc(conf)+'">'+esc(conf)+' confidence</span> '+
+    esc(f.assessment||'')+
+    (unknowns ? '<div><h4 style="margin-top:10px">Unknowns</h4><ul class="unknowns">'+unknowns+'</ul></div>' : '')+
+    '</div></div>';
+  if(c.concept){
+    html += '<div class="block"><h4>Collaboration concept</h4><div class="concept">'+esc(c.concept)+'</div></div>';
+  }
+  if(c.outreach_draft){
+    html += '<div class="draft-head"><h4 style="margin:0;color:var(--text-3);text-transform:uppercase;font-size:11px;letter-spacing:.08em">Outreach draft</h4>'+
+      '<span class="pill">Awaiting your approval</span></div>'+
+      '<div class="draft">'+esc(c.outreach_draft)+'</div>'+
+      '<div class="row"><button class="mini" onclick="this.textContent=\'Copied\';navigator.clipboard&&navigator.clipboard.writeText(this.closest(\'.card\').querySelector(\'.draft\').textContent)">Copy draft</button></div>';
+  }
+  html += '</div>';
+  return html;
+}
+</script>
+</body>
+</html>

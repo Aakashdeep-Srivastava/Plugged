@@ -79,7 +79,8 @@
   <nav aria-label="Sections">
     <div class="nav-group">
       <div class="nav-label">Work</div>
-      <button class="active" onclick="showTab('today', this)"><svg class="icon" aria-hidden="true"><use href="#i-today"/></svg><span class="label">Today</span><span class="nav-count" id="nav-today"></span></button>
+      <button class="active" onclick="showTab('collabs', this)"><svg class="icon" aria-hidden="true"><use href="#i-sparkle"/></svg><span class="label">Collabs</span></button>
+      <button onclick="showTab('today', this)"><svg class="icon" aria-hidden="true"><use href="#i-today"/></svg><span class="label">Today</span><span class="nav-count" id="nav-today"></span></button>
       <button onclick="showTab('outbox', this)"><svg class="icon" aria-hidden="true"><use href="#i-outbox"/></svg><span class="label">Outbox</span><span class="nav-count" id="nav-outbox"></span></button>
       <button onclick="showTab('conversations', this)"><svg class="icon" aria-hidden="true"><use href="#i-conversations"/></svg><span class="label">Conversations</span><span class="nav-count" id="nav-conversations"></span></button>
     </div>
@@ -118,8 +119,30 @@
 <main class="content">
 <div class="content-inner">
 
+<!-- Collabs: PLUGGED's core — Qloo-powered cultural partnership discovery -->
+<div id="collabs" class="section active">
+  <div class="section-head">
+    <div>
+      <h2>Find a collab</h2>
+      <p>Describe your brand. PLUGGED reads your audience's taste through Qloo,
+         hunts across <em>different</em> cultural categories for a surprising-but-aligned
+         partner, shows the cultural receipts, and drafts a proposal for you to approve.</p>
+    </div>
+  </div>
+  <div class="card">
+    <label class="form-label" for="collab-brief">Brand brief</label>
+    <textarea class="form-input" id="collab-brief" rows="3" style="resize:vertical">We're a streetwear brand looking for an unexpected music, lifestyle, or hospitality collaboration.</textarea>
+    <div class="btn-group" style="margin-top:12px">
+      <button class="btn btn-primary" id="collab-go" onclick="runCollab()">Find my next collab</button>
+      <span class="hint" id="collab-brain"></span>
+    </div>
+  </div>
+  <div id="collab-activity" class="card" style="display:none"></div>
+  <div id="collab-results"></div>
+</div>
+
 <!-- Today: what needs a human -->
-<div id="today" class="section active">
+<div id="today" class="section">
   <div class="section-head">
     <div>
       <h2>Today</h2>

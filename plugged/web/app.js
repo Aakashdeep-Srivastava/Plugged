@@ -1,4 +1,4 @@
-let currentTab = 'today';
+let currentTab = 'collabs';
 let companyDrill = false;      // true while viewing a single company's contacts
 let _companies = [], _prospects = [], _campaigns = [];
 let _signals = null;           // last /api/signals payload, for the cohort builder
@@ -406,6 +406,7 @@ function showTab(id, btn) {
 
 function loadCurrentTab() {
   switch (currentTab) {
+    case 'collabs': loadCollabs(); break;
     case 'today': loadLiveStatus(); loadToday(); loadTrend(); loadFunnel(); loadSetupStatus(); loadRuns(); loadTodayActivity(); break;
     case 'signals': loadSignals(); break;
     case 'discover': loadDiscoverProviders(); break;
@@ -2614,3 +2615,116 @@ setInterval(() => {
     case 'controls': loadLogs(); break;
   }
 }, 15000);
+
+// ── Collabs: PLUGGED's core (Qloo cultural partnership discovery) ──
+
+function loadCollabs() {
+  const hint = document.getElementById('collab-brain');
+  if (hint) hint.textContent = 'Culture from Qloo · reasoning on your configured brain';
+}
+
+async function runCollab() {
+  const btn = document.getElementById('collab-go');
+  const brief = (document.getElementById('collab-brief').value || '').trim();
+  if (!brief) return;
+  const act = document.getElementById('collab-activity');
+  const out = document.getElementById('collab-results');
+  btn.disabled = true; btn.textContent = 'Working…';
+  act.style.display = 'block'; act.innerHTML = '<div class="subhead" style="margin-top:0">Live activity</div>';
+  out.innerHTML = '';
+  try {
+    const r = await authFetch('/api/collab', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ brief }),
+    });
+    if (await lockIfRefused(r)) return;
+    if (!r.ok || !r.body) {
+      let msg = 'Request failed (' + r.status + ')';
+      try { msg = (await r.json()).error || msg; } catch {}
+      out.innerHTML = '<div class="card" style="color:var(--bad)">' + escHtml(msg) + '</div>';
+      return;
+    }
+    const reader = r.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '';
+    while (true) {
+      const { value, done } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      let nl;
+      while ((nl = buf.indexOf('\n')) >= 0) {
+        const line = buf.slice(0, nl).trim(); buf = buf.slice(nl + 1);
+        if (line) handleCollabMsg(JSON.parse(line), act, out);
+      }
+    }
+  } catch (e) {
+    out.innerHTML = '<div class="card" style="color:var(--bad)">' + escHtml(e.message || 'Error') + '</div>';
+  } finally {
+    btn.disabled = false; btn.textContent = 'Find my next collab';
+  }
+}
+
+function handleCollabMsg(msg, act, out) {
+  if (msg.type === 'event') {
+    const row = document.createElement('div');
+    row.style.cssText = 'padding:4px 0;color:var(--text-2);font-size:var(--fs-ui)';
+    row.innerHTML = '<b style="color:var(--text);text-transform:capitalize">' +
+      escHtml(msg.step) + '</b> — ' + escHtml(msg.detail);
+    act.appendChild(row);
+  } else if (msg.type === 'result') {
+    renderCollabResult(msg.result, out);
+  } else if (msg.type === 'error') {
+    out.innerHTML = '<div class="card" style="color:var(--bad)">' + escHtml(msg.error) + '</div>';
+  }
+}
+
+function renderCollabResult(res, out) {
+  let html = '';
+  if (res.note) html += '<div class="card" style="border-color:var(--wait-line);color:var(--wait)">' + escHtml(res.note) + '</div>';
+  const cands = res.candidates || [];
+  if (cands.length) {
+    html += '<div class="subhead">Partnership candidates</div>';
+    html += cands.map(collabCard).join('');
+  }
+  if (res.disclaimer) html += '<p class="hint" style="margin-top:14px">' + escHtml(res.disclaimer) + '</p>';
+  out.innerHTML = html;
+}
+
+function collabCard(c) {
+  const aff = (c.qloo_affinity != null) ? Math.round(c.qloo_affinity * 100) : null;
+  const cat = escHtml((c.category || c.entity_type || '').replace('urn:entity:', ''));
+  const tags = (c.qloo_tags || []).map(t =>
+    '<span class="tag accent">' + escHtml(t) + '</span>').join(' ');
+  const f = c.business_feasibility || {};
+  const conf = escHtml((f.confidence || 'unknown'));
+  const unknowns = (f.unknowns || []).map(u => '<li>' + escHtml(u) + '</li>').join('');
+  let h = '<div class="card" style="margin-bottom:14px">';
+  h += '<div style="display:flex;justify-content:space-between;gap:14px;align-items:flex-start">';
+  h += '<div><div style="font-size:var(--fs-h3);font-weight:700">' + escHtml(c.name) +
+    '</div><div class="hint">' + cat + '</div></div>';
+  h += '<div style="text-align:right">' + (aff != null
+    ? '<div style="font-size:var(--fs-kpi);font-weight:800;color:var(--accent)">' + aff +
+      '</div><div class="hint">Qloo affinity</div>'
+    : '<div class="hint">no Qloo affinity</div>') + '</div></div>';
+  if (tags) h += '<div style="margin-top:10px">' + tags + '</div>';
+  if (c.cultural_rationale)
+    h += '<div style="margin-top:12px"><div class="hint">Cultural fit · evidence via Qloo</div>' +
+      escHtml(c.cultural_rationale) + '</div>';
+  h += '<div style="margin-top:12px"><div class="hint">Business feasibility · PLUGGED opinion, not Qloo</div>' +
+    '<div class="inset" style="margin-top:4px"><span class="tag">' + conf + ' confidence</span> ' +
+    escHtml(f.assessment || '') +
+    (unknowns ? '<ul style="margin:8px 0 0 18px;color:var(--text-2)">' + unknowns + '</ul>' : '') +
+    '</div></div>';
+  if (c.concept)
+    h += '<div style="margin-top:12px"><div class="hint">Collaboration concept</div>' +
+      '<div style="border-left:2px solid var(--accent);padding-left:10px;margin-top:4px">' +
+      escHtml(c.concept) + '</div></div>';
+  if (c.outreach_draft) {
+    h += '<div style="margin-top:12px;display:flex;justify-content:space-between;align-items:center">' +
+      '<div class="hint" style="margin:0">Outreach draft</div>' +
+      '<span class="tag" style="color:var(--wait)">Awaiting your approval</span></div>' +
+      '<div class="inset" style="white-space:pre-wrap;margin-top:4px">' + escHtml(c.outreach_draft) + '</div>';
+  }
+  h += '</div>';
+  return h;
+}

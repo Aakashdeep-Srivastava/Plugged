@@ -1,4 +1,10 @@
-"""PLUGGED — an autonomous sales agent that runs on your Claude subscription."""
+"""PLUGGED — autonomous cultural partnership intelligence, powered by Qloo.
+
+Finds unexpected but culturally relevant collaboration partners for a brand,
+explains the fit with real Qloo taste data, and drafts partnership proposals for
+human approval. Built on the open-source Harvey agent (MIT); see the README's
+"Open-source foundation" section.
+"""
 
 import sys
 
@@ -15,5 +21,3 @@ if sys.version_info < (3, 11):  # pragma: no cover - version guard
         f"    rm -rf .venv && $(brew --prefix)/bin/python3.13 -m venv .venv\n"
         f"    source .venv/bin/activate && pip install -e ."
     )
-
-"""PLUGGED — Autonomous Sales Agent. Always Be Closing."""

@@ -20,7 +20,7 @@ import yaml
 from dotenv import load_dotenv
 from fastapi import FastAPI, Request
 from fastapi.responses import (
-    HTMLResponse, JSONResponse, PlainTextResponse, Response,
+    HTMLResponse, JSONResponse, PlainTextResponse, Response, StreamingResponse,
 )
 
 logger = logging.getLogger("plugged.dashboard")
@@ -2501,6 +2501,85 @@ TEXT_TYPES = {".css": "text/css", ".js": "text/javascript", ".svg": "image/svg+x
               ".webmanifest": "application/manifest+json", ".json": "application/json"}
 BINARY_TYPES = {".woff2": "font/woff2", ".woff": "font/woff", ".png": "image/png",
                 ".ico": "image/x-icon"}
+
+
+# ── Collabs (PLUGGED's core: Qloo cultural partnership discovery) ──
+
+
+def _collab_brain(env):
+    """Pick a model brain for the dashboard's collab runs: the Anthropic API
+    when a key is set, otherwise the local Claude subscription (same brain the
+    heartbeat uses). Returns (brain, needs_state)."""
+    if getattr(env, "anthropic_api_key", ""):
+        from plugged.api_brain import AnthropicAPIBrain
+        return AnthropicAPIBrain(), False
+    from plugged.brain import Brain
+    from plugged.config import load_brain_config
+    return Brain(_state(), load_brain_config()), True
+
+
+@app.post("/api/collab")
+async def run_collab(request: Request):
+    """Run the cultural-partnership agent, streaming NDJSON (events then result).
+    Token-gated like every dashboard route; uses Qloo + a local model brain."""
+    try:
+        body = await request.json()
+    except Exception:
+        return JSONResponse({"error": "Send JSON: {\"brief\": \"...\"}"}, status_code=400)
+    brief = (body or {}).get("brief") if isinstance(body, dict) else None
+    if not isinstance(brief, str) or not brief.strip():
+        return JSONResponse({"error": "A brand brief is required."}, status_code=400)
+    if len(brief) > 2000:
+        return JSONResponse({"error": "Brief is too long (max 2000)."}, status_code=400)
+
+    from plugged.collab_agent import CollabAgent
+    from plugged.config import load_env
+    from plugged.integrations.qloo import QlooClient
+
+    env = load_env()
+    qloo = QlooClient()
+    if not qloo.configured:
+        return JSONResponse(
+            {"error": "Set QLOO_API_KEY in .env (Settings) to discover collabs."},
+            status_code=503)
+    brain, needs_state = _collab_brain(env)
+    if needs_state:
+        try:
+            await brain.state.init_db()
+        except Exception:
+            pass
+
+    agent = CollabAgent(brain, qloo)
+    queue: asyncio.Queue = asyncio.Queue()
+
+    async def on_event(event):
+        await queue.put({"type": "event", **event})
+
+    async def driver():
+        try:
+            result = await agent.run(brief.strip(), on_event=on_event)
+            await queue.put({"type": "result", "result": result})
+        except Exception as e:
+            logger.error("collab run failed (%s)", type(e).__name__)
+            await queue.put({"type": "error", "error": "The agent hit an error."})
+        finally:
+            await queue.put(None)
+
+    async def stream():
+        task = asyncio.create_task(driver())
+        try:
+            while True:
+                item = await queue.get()
+                if item is None:
+                    break
+                yield json.dumps(item, ensure_ascii=False) + "\n"
+        finally:
+            if not task.done():
+                task.cancel()
+
+    return StreamingResponse(stream(), media_type="application/x-ndjson",
+                             headers={"Cache-Control": "no-store",
+                                      "X-Accel-Buffering": "no"})
 
 
 @app.get("/static/{path:path}")

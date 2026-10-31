@@ -1,0 +1,10 @@
+# Normalize line endings to LF in the repo (Windows checkouts can keep CRLF
+# locally). Keeps shell scripts, the Dockerfile and Python consistent.
+* text=auto eol=lf
+
+# Binary assets — never touch.
+*.png binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.gif binary

@@ -640,6 +640,11 @@ class EnvConfig(BaseModel):
     m365_tenant_id: str = ""
     # Optional: only used when compliance.precleared.enabled is true.
     precleared_api_key: str = ""
+    # PLUGGED — Qloo Taste AI (cultural partnership discovery) and the
+    # Anthropic API key used by the hosted demo's model brain.
+    qloo_api_key: str = ""
+    qloo_api_base: str = ""
+    anthropic_api_key: str = ""
 
 
 def _format_validation_error(e: ValidationError) -> str:
@@ -755,6 +760,9 @@ def load_env() -> EnvConfig:
         m365_client_id=os.getenv("M365_CLIENT_ID", "").strip(),
         m365_tenant_id=os.getenv("M365_TENANT_ID", "").strip(),
         precleared_api_key=os.getenv("PRECLEARED_API_KEY", "").strip(),
+        qloo_api_key=os.getenv("QLOO_API_KEY", "").strip(),
+        qloo_api_base=os.getenv("QLOO_API_BASE", "").strip(),
+        anthropic_api_key=os.getenv("ANTHROPIC_API_KEY", "").strip(),
     )
     return env
 

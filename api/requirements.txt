@@ -1,0 +1,11 @@
+# Slim dependency set for the Vercel serverless demo — ONLY what the
+# cultural-partnership agent needs at runtime. Deliberately excludes the local
+# app's heavy deps (playwright, beautifulsoup4, aiosmtplib, aiosqlite, etc.),
+# which the hosted demo never touches.
+fastapi>=0.115,<1
+anthropic>=0.40,<1
+httpx>=0.27.0,<1
+pydantic>=2.5,<3
+python-dotenv>=1.0.1,<2
+pyyaml>=6.0.1,<7
+pytz>=2024.1
