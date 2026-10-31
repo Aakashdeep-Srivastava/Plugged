@@ -63,3 +63,5 @@ plugged.yaml.*
 
 # Node (icon generation via sharp)
 node_modules/
+
+.vercel
