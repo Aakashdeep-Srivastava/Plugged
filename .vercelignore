@@ -12,5 +12,4 @@ data/
 .claude/
 .agents/
 *.db
-harvey.local.yaml
 plugged.local.yaml

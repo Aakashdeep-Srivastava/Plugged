@@ -1,10 +1,10 @@
 # Skills
 
-Skills are editable Markdown files that give Harvey foundational sales knowledge. Each agent loads the skills it needs before making decisions.
+Skills are editable Markdown files that give PLUGGED foundational knowledge (the inherited sales skills, plus PLUGGED's `cultural_partnership.md`). Each agent loads the skills it needs before making decisions.
 
 ## How Skills Work
 
-When an agent runs, it calls `brain.load_skills_for_agent("agent_name")` which concatenates the relevant skill files and injects them into the prompt. This means you can change Harvey's behavior by editing these files — no code changes needed.
+When an agent runs, it calls `brain.load_skills_for_agent("agent_name")` which concatenates the relevant skill files and injects them into the prompt. This means you can change PLUGGED's behavior by editing these files — no code changes needed.
 
 ## Skill → Agent Mapping
 

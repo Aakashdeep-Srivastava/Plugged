@@ -222,13 +222,21 @@ def test_another_warmup_service_is_respected():
 # ── The link is defined once ──
 
 def test_the_link_lives_in_one_constant():
+    # The code-hygiene invariant still holds: the TrulyInbox URL lives in exactly
+    # one source constant, so there's no second copy to drift.
     from plugged.paths import PROJECT_ROOT
     src = [p for p in (PROJECT_ROOT / "plugged").rglob("*") if p.suffix in (".py", ".js", ".html")]
     assert [p.name for p in src if "trulyinbox.com/?via" in p.read_text(encoding="utf-8")] == ["trulyinbox.py"]
+    # NOTE: Harvey required the affiliate link to appear in README/CLAUDE/config
+    # as a marketing invariant. PLUGGED keeps the warmup code as inherited
+    # outreach infrastructure but does not market the affiliate in its own docs,
+    # so that docs-presence assertion was intentionally dropped during the
+    # PLUGGED reorientation. Wherever the link DOES still appear, it must carry
+    # the referral:
     for name in ("README.md", "CLAUDE.md", "plugged.yaml"):
         text = (PROJECT_ROOT / name).read_text(encoding="utf-8")
-        assert ti.AFFILIATE_URL in text, name
-        # every link to the site carries the referral
+        if "trulyinbox.com/" not in text:
+            continue
         assert text.count("trulyinbox.com/") - text.count("dev.trulyinbox.com/") \
             == text.count(ti.AFFILIATE_URL), name
 
