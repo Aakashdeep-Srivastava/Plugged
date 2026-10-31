@@ -2,8 +2,8 @@
   "name": "PLUGGED",
   "short_name": "PLUGGED",
   "description": "Unexpected collabs. Cultural receipts.",
-  "theme_color": "#101014",
-  "background_color": "#101014",
+  "theme_color": "#111411",
+  "background_color": "#111411",
   "display": "standalone",
   "icons": [
     {

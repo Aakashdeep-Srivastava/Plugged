@@ -15,23 +15,25 @@
 <meta property="og:type" content="website">
 <style>
   :root{
-    --bg:#101014; --surface:#17171C; --surface-2:#1E1E24; --line:#2A2A32;
-    --text:#FFFFFF; --text-2:#A8A8B3; --text-3:#70707A;
-    --lime:#C7FB54; --lime-dim:#9BC73F;
-    --good:#5CCB8F; --wait:#F0B84F; --bad:#FF7A85;
-    --r:14px; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    /* PLUGGED — Electric Culture, light (editorial, premium) */
+    --bg:#F7F8F6; --surface:#FFFFFF; --surface-2:#F0F4EC; --line:#E1E6DF;
+    --text:#202820; --text-2:#626D63; --text-3:#727B72;
+    --ink:#111411;
+    --lime:#C7F66A; --lime-dim:#6E9C37;  /* lime for fills/buttons; Signal Green for text on light */
+    --good:#36A269; --wait:#B7791F; --bad:#D65C62; --insight:#159B90; --collab:#9670D4;
+    --r:16px; --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   }
   *{margin:0;padding:0;box-sizing:border-box}
   body{background:var(--bg);color:var(--text);font-family:var(--sans);
     font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;
-    background-image:radial-gradient(900px 500px at 80% -10%, rgba(199,251,84,.08), transparent 60%);}
+    background-image:radial-gradient(900px 500px at 85% -10%, rgba(199,246,106,.30), transparent 60%);}
   a{color:var(--lime)}
   .wrap{max-width:1040px;margin:0 auto;padding:28px 20px 80px}
   header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
   header img{width:34px;height:34px;border-radius:7px}
   header h1{font-size:22px;font-weight:800;letter-spacing:.04em}
-  .tag{color:var(--lime);font-weight:600;font-size:13px;letter-spacing:.02em}
+  .tag{color:var(--lime-dim);font-weight:700;font-size:13px;letter-spacing:.02em}
   .sub{color:var(--text-2);margin:14px 0 24px;max-width:70ch}
   .sub b{color:var(--text)}
 
@@ -66,13 +68,13 @@
   .cand-name{font-size:19px;font-weight:750}
   .cand-cat{color:var(--text-3);font-size:12px;text-transform:uppercase;letter-spacing:.07em;margin-top:2px}
   .aff{text-align:right;flex:none}
-  .aff .n{font-size:24px;font-weight:800;color:var(--lime);font-variant-numeric:tabular-nums}
+  .aff .n{font-size:24px;font-weight:800;color:var(--lime-dim);font-variant-numeric:tabular-nums}
   .aff .l{font-size:10px;color:var(--text-3);text-transform:uppercase;letter-spacing:.08em}
   .bar{height:5px;background:var(--surface-2);border-radius:3px;overflow:hidden;margin-top:12px}
   .bar>i{display:block;height:100%;background:var(--lime)}
   .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
-  .tags .t{font-size:11px;background:rgba(199,251,84,.1);color:var(--lime-dim);
-    border:1px solid rgba(199,251,84,.25);border-radius:6px;padding:3px 8px}
+  .tags .t{font-size:11px;background:rgba(110,156,55,.12);color:var(--lime-dim);
+    border:1px solid rgba(110,156,55,.28);border-radius:6px;padding:3px 8px}
   .block{margin-top:14px}
   .block h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);margin-bottom:5px}
   .block.culture h4{color:var(--lime-dim)}

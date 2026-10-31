@@ -49,99 +49,91 @@
   /* Radii: controls sit inside cards with 6px padding+, so cards are
      concentric with the controls they hold. */
   --r-xs: 4px;   /* tags, kbd */
-  --r-sm: 6px;   /* buttons, inputs */
-  --r-md: 10px;  /* inner panels */
-  --r-lg: 14px;  /* cards */
+  --r-sm: 9px;   /* buttons, inputs */
+  --r-md: 12px;  /* inner panels */
+  --r-lg: 16px;  /* cards */
 
   --sidebar-w: 236px;
   --content-w: 1180px;
 
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
-  /* PLUGGED brand — near-black, electric lime, white type. The product
-     commits to one look, so every theme block below resolves here. */
-  --bg:          #101014;
-  --surface:     #17171C;
-  --surface-2:   #1E1E24;   /* hover, inset panels */
-  --surface-3:   #27272F;   /* pressed, tracks */
-  --line:        #26262E;
-  --line-strong: #37373F;
-  --text:        #FFFFFF;
-  --text-2:      #A8A8B3;
-  --text-3:      #70707A;
-  --accent:      #C7FB54;   /* electric lime */
-  --accent-hover:#D4FC7A;
-  --accent-text: #101014;   /* dark type on the lime accent — never white */
-  --accent-soft: #1E2910;
-  --accent-line: #3A4D1E;
-  --chart-muted: #4A5D2A;
+  /* PLUGGED — Electric Culture. Light is the default (editorial, premium);
+     dark is an opt-in toggle below. Electric lime is the one brand accent —
+     primary actions, current page, main chart series — never decoration.
+     Cultural insight = teal, collaboration stages = violet. */
+  --bg:          #F7F8F6;   /* Cloud White */
+  --surface:     #FFFFFF;   /* cards & surfaces */
+  --surface-2:   #F0F4EC;   /* hover, inset panels (surface-hover) */
+  --surface-3:   #E8EEE3;   /* pressed, tracks */
+  --line:        #E1E6DF;   /* border */
+  --line-strong: #D2D9CF;
+  --text:        #202820;   /* Forest Ink */
+  --text-2:      #626D63;
+  --text-3:      #727B72;
+  --accent:      #C7F66A;   /* Electric Lime */
+  --accent-hover:#B5E754;
+  --accent-text: #111411;   /* Midnight Ink type on lime — never white */
+  --accent-ink:  #5E8A2C;   /* lime-as-TEXT on light (lime itself is unreadable here) */
+  --accent-soft: #EEF7DC;
+  --accent-line: #D8EBB0;
+  --chart-muted: #B9D98A;
 
-  --good:   #5CCB8F; --good-bg:   #10261B; --good-line:   #1C4130;
-  --wait:   #F0B84F; --wait-bg:   #2A2010; --wait-line:   #4A3817;
-  --bad:    #FF7A85; --bad-bg:    #2C1316; --bad-line:    #4C1F25;
-  --active: #4CC3D9; --active-bg: #0C2328; --active-line: #164049;
-  --note:   #B79BF5; --note-bg:   #1E1730; --note-line:   #352857;
+  --good:   #36A269; --good-bg:   #E6F4EC; --good-line:   #C2E3D0;  /* verified */
+  --wait:   #B7791F; --wait-bg:   #FBF1DF; --wait-line:   #F0DCB0;  /* awaiting approval */
+  --bad:    #D65C62; --bad-bg:    #FBE9EA; --bad-line:    #F3C9CC;  /* error/rejected */
+  --active: #159B90; --active-bg: #E0F3F1; --active-line: #B6E2DD;  /* Qloo cultural insight */
+  --note:   #9670D4; --note-bg:   #F1EBFA; --note-line:   #DCCDF3;  /* collaboration stage */
 
-  --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.07);
-  --shadow-border-hover: 0 0 0 1px rgb(255 255 255 / 0.12);
-  --shadow-pop: 0 0 0 1px rgb(255 255 255 / 0.09), 0 16px 40px -8px rgb(0 0 0 / 0.6);
-  --btn-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.10);
-  --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 0 0 1px rgb(0 0 0 / 0.35);
-  color-scheme: dark;
+  --shadow-border:
+    0 0 0 1px rgb(32 40 32 / 0.06),
+    0 1px 2px -1px rgb(32 40 32 / 0.06),
+    0 2px 4px 0 rgb(32 40 32 / 0.04);
+  --shadow-border-hover:
+    0 0 0 1px rgb(32 40 32 / 0.09),
+    0 1px 2px -1px rgb(32 40 32 / 0.08),
+    0 2px 6px 0 rgb(32 40 32 / 0.06);
+  --shadow-pop: 0 0 0 1px rgb(32 40 32 / 0.08), 0 12px 32px -8px rgb(32 40 32 / 0.18);
+  --btn-shadow: 0 0 0 1px rgb(32 40 32 / 0.10), 0 1px 2px rgb(32 40 32 / 0.06);
+  --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 0 0 1px #AEDC4F, 0 1px 2px rgb(32 40 32 / 0.12);
+  color-scheme: light;
 }
 
 /* Dark — near-black, neutral. Declared twice on purpose: once for an
    explicit choice, once for the system preference when none is chosen. */
+/* Dark — opt-in via the theme toggle (data-theme='dark'). Midnight Ink,
+   bold/futuristic. Light stays the default: PLUGGED does NOT auto-switch to
+   dark on a system preference — dark is a deliberate choice. */
 :root[data-theme='dark'] {
-  --bg:          #101014;
-  --surface:     #17171C;
-  --surface-2:   #1E1E24;
-  --surface-3:   #27272F;
-  --line:        #26262E;
-  --line-strong: #37373F;
-  --text:        #FFFFFF;
-  --text-2:      #A8A8B3;
-  --text-3:      #70707A;
-  --accent:      #C7FB54;
-  --accent-hover:#D4FC7A;
-  --accent-text: #101014;
-  --accent-soft: #1E2910;
-  --accent-line: #3A4D1E;
+  --bg:          #111411;   /* Midnight Ink */
+  --surface:     #1B201B;
+  --surface-2:   #252C25;
+  --surface-3:   #2F382F;
+  --line:        #303830;
+  --line-strong: #3E483E;
+  --text:        #F4F7F1;
+  --text-2:      #B4BEB3;
+  --text-3:      #A5B0A3;
+  --accent:      #C7F66A;
+  --accent-hover:#D4FF7A;
+  --accent-text: #111411;
+  --accent-ink:  #C7F66A;   /* lime reads fine as text on dark */
+  --accent-soft: #26331A;
+  --accent-line: #3C4D22;
   --chart-muted: #4A5D2A;
 
-  --good:   #5CCB8F; --good-bg:   #10261B; --good-line:   #1C4130;
-  --wait:   #F0B84F; --wait-bg:   #2A2010; --wait-line:   #4A3817;
-  --bad:    #FF7A85; --bad-bg:    #2C1316; --bad-line:    #4C1F25;
-  --active: #4CC3D9; --active-bg: #0C2328; --active-line: #164049;
-  --note:   #B79BF5; --note-bg:   #1E1730; --note-line:   #352857;
+  --good:   #5FD199; --good-bg:   #10241A; --good-line:   #1E4231;
+  --wait:   #E0A83A; --wait-bg:   #2A2210; --wait-line:   #4A3A18;
+  --bad:    #F08A90; --bad-bg:    #2C1618; --bad-line:    #4C2528;
+  --active: #4FC3B5; --active-bg: #0E2623; --active-line: #1A423D;
+  --note:   #B89BEB; --note-bg:   #1E1730; --note-line:   #352857;
 
   --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.07);
   --shadow-border-hover: 0 0 0 1px rgb(255 255 255 / 0.12);
   --shadow-pop: 0 0 0 1px rgb(255 255 255 / 0.09), 0 16px 40px -8px rgb(0 0 0 / 0.6);
   --btn-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.10);
-  --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 0 0 1px rgb(0 0 0 / 0.35);
+  --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.25), 0 0 0 1px rgb(0 0 0 / 0.30);
   color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    --bg:#101014; --surface:#17171C; --surface-2:#1E1E24; --surface-3:#27272F;
-    --line:#26262E; --line-strong:#37373F;
-    --text:#FFFFFF; --text-2:#A8A8B3; --text-3:#70707A;
-    --accent:#C7FB54; --accent-hover:#D4FC7A; --accent-text:#101014;
-    --accent-soft:#1E2910; --accent-line:#3A4D1E; --chart-muted:#4A5D2A;
-    --good:#5CCB8F; --good-bg:#10261B; --good-line:#1C4130;
-    --wait:#F0B84F; --wait-bg:#2A2010; --wait-line:#4A3817;
-    --bad:#FF7A85; --bad-bg:#2C1316; --bad-line:#4C1F25;
-    --active:#4CC3D9; --active-bg:#0C2328; --active-line:#164049;
-    --note:#B79BF5; --note-bg:#1E1730; --note-line:#352857;
-    --shadow-border: 0 0 0 1px rgb(255 255 255 / 0.07);
-    --shadow-border-hover: 0 0 0 1px rgb(255 255 255 / 0.12);
-    --shadow-pop: 0 0 0 1px rgb(255 255 255 / 0.09), 0 16px 40px -8px rgb(0 0 0 / 0.6);
-    --btn-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06), 0 0 0 1px rgb(255 255 255 / 0.10);
-    --btn-primary-shadow: inset 0 1px 0 rgb(255 255 255 / 0.20), 0 0 0 1px rgb(0 0 0 / 0.4);
-    color-scheme: dark;
-  }
 }
 
 /* ── Base ────────────────────────────────────────────────────── */
@@ -224,12 +216,12 @@ nav button .label { flex: 1; min-width: 0; overflow: hidden; text-overflow: elli
   nav button:hover .icon { color: var(--text-2); }
 }
 nav button.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow-border); }
-nav button.active .icon { color: var(--accent); }
+nav button.active .icon { color: var(--accent-ink); }
 .nav-count {
   display: none; min-width: 20px; height: 18px; padding: 0 6px;
   align-items: center; justify-content: center;
   font-size: 11px; font-weight: 600; border-radius: 99px;
-  background: var(--accent-soft); color: var(--accent);
+  background: var(--accent-soft); color: var(--accent-ink);
 }
 .nav-count.on { display: inline-flex; }
 
@@ -433,7 +425,7 @@ main.content { min-width: 0; padding: var(--sp-6) var(--sp-6) 96px; }
 .badge.t-idle    { background: var(--surface-2); color: var(--text-2); border-color: var(--line); }
 .badge.t-idle::before { background: var(--text-3); }
 .tag { background: var(--surface-2); color: var(--text-2); border-color: var(--line); }
-.tag.accent { background: var(--accent-soft); color: var(--accent); border-color: var(--accent-line); }
+.tag.accent { background: var(--accent-soft); color: var(--accent-ink); border-color: var(--accent-line); }
 .cost-chip {
   display: inline-flex; align-items: center; min-height: 22px; padding: 2px 8px; border-radius: 11px;
   font-size: var(--fs-caption); font-weight: 500; line-height: 1.35;
@@ -542,7 +534,7 @@ tr:focus-within .row-action { opacity: 1; }
 .step-icon { width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 .step-icon .icon { width: 12px; height: 12px; stroke-width: 2.5; }
 .step-icon.done { background: var(--good-bg); color: var(--good); }
-.step-icon.running { background: var(--accent-soft); color: var(--accent); }
+.step-icon.running { background: var(--accent-soft); color: var(--accent-ink); }
 .step-icon.partial { background: var(--surface-3); color: var(--text-2); }
 .step-icon.waiting { box-shadow: inset 0 0 0 1.5px var(--line-strong); }
 .step-label { font-size: var(--fs-ui); font-weight: 500; }
@@ -555,7 +547,7 @@ tr:focus-within .row-action { opacity: 1; }
   padding: 10px 12px; border-radius: var(--r-md); background: var(--accent-soft); color: var(--text);
   font-size: var(--fs-ui);
 }
-.live-next .icon { color: var(--accent); margin-top: 1px; }
+.live-next .icon { color: var(--accent-ink); margin-top: 1px; }
 .live-flag { font-size: var(--fs-caption); color: var(--text-3); margin-top: var(--sp-2); }
 .pulse { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); flex: none; }
 @media (prefers-reduced-motion: no-preference) {
@@ -659,7 +651,7 @@ details[open] > summary::before { rotate: 45deg; }
 .cohort-range > span:first-child { flex: 1; }
 .cohort-bound { width: 64px; padding: 3px 6px; font: inherit; font-size: 12px; }
 .cohort-range:has(.cohort-bound:not(:placeholder-shown)) { background: var(--accent-soft); box-shadow: inset 0 0 0 1px var(--accent-line); }
-.cohort-pick input { accent-color: var(--accent); }
+.cohort-pick input { accent-color: var(--accent-ink); }
 .cohort-pick .n { margin-left: auto; font-size: var(--fs-caption); color: var(--text-3); }
 .cohort-size { font-size: 2rem; font-weight: 600; letter-spacing: -0.03em; line-height: 1.1; }
 
@@ -709,7 +701,7 @@ details[open] > summary::before { rotate: 45deg; }
 }
 .desk-edit-subject { font-size: var(--fs-h3); font-weight: 500; }
 .desk-edit-body { font-size: var(--fs-body); line-height: 1.65; resize: vertical; max-width: 66ch; }
-.desk-edit-subject:focus, .desk-edit-body:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.desk-edit-subject:focus, .desk-edit-body:focus { outline: none; border-color: var(--accent-ink); box-shadow: 0 0 0 3px var(--accent-soft); }
 @media (max-width: 900px) {
   .desk { grid-template-columns: minmax(0, 1fr); }
   .desk-list { max-height: 240px; }
@@ -784,7 +776,7 @@ details[open] > summary::before { rotate: 45deg; }
   transition-property: border-color, box-shadow; transition-duration: 120ms; transition-timing-function: ease;
 }
 textarea.form-input { height: auto; padding: 8px 12px; }
-.form-input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+.form-input:focus { outline: none; border-color: var(--accent-ink); box-shadow: 0 0 0 3px var(--accent-soft); }
 .form-input::placeholder { color: var(--text-3); }
 .form-row { display: flex; gap: var(--sp-3); align-items: flex-end; flex-wrap: wrap; }
 .form-row .form-group { flex: 1; min-width: 140px; }
@@ -852,7 +844,7 @@ textarea.form-input { height: auto; padding: 8px 12px; }
 .rcpt + .rcpt { border-top: 1px solid var(--line); }
 .rcpt-who { flex: 1 1 200px; min-width: 0; font-size: var(--fs-ui); display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; overflow-wrap: anywhere; }
 .step-actions label { display: inline-flex; align-items: center; gap: 6px; font-size: var(--fs-caption); color: var(--text-2); cursor: pointer; }
-.step-actions input { accent-color: var(--accent); }
+.step-actions input { accent-color: var(--accent-ink); }
 
 /* ── Conversations ───────────────────────────────────────────── */
 
@@ -879,7 +871,7 @@ textarea.form-input { height: auto; padding: 8px 12px; }
   display: flex; align-items: center; gap: 8px; padding: 8px 14px; font-size: var(--fs-caption);
   color: var(--text-2); background: var(--surface-2); border-bottom: 1px solid var(--line);
 }
-.te-head .icon { width: 13px; height: 13px; color: var(--accent); }
+.te-head .icon { width: 13px; height: 13px; color: var(--accent-ink); }
 .te-head b { color: var(--text); font-weight: 600; }
 .te-head span:not(.te-when) { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
 .te-when { margin-left: auto; color: var(--text-3); white-space: nowrap; }
@@ -888,7 +880,7 @@ textarea.form-input { height: auto; padding: 8px 12px; }
   align-self: flex-end; width: min(78%, 64ch); padding: 10px 14px 12px; border-radius: 14px;
   border: 1.5px dashed var(--accent-line); background: var(--accent-soft);
 }
-.thread-draft .sender { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+.thread-draft .sender { display: flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; color: var(--accent-ink); margin-bottom: 4px; }
 .thread-draft .sender .icon { width: 12px; height: 12px; }
 .td-body { font-size: var(--fs-ui); line-height: 1.55; white-space: pre-wrap; margin-bottom: 10px; }
 @media (max-width: 640px) { .thread-email, .thread-draft, .thread-msg { width: auto; max-width: 92%; } }

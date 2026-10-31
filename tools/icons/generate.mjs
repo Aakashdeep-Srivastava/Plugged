@@ -9,8 +9,8 @@ import { dirname, resolve } from "node:path";
 const __dir = dirname(fileURLToPath(import.meta.url));
 const SRC = process.env.SRC || "C:/Users/aakas/Downloads/PLUGGED-transparent-icon.png";
 const OUT = resolve(__dir, "../../plugged/web/icons");
-const BG = "#101014";       // PLUGGED near-black
-const ACCENT = "#C7FB54";   // electric lime
+const BG = "#111411";       // PLUGGED Midnight Ink
+const ACCENT = "#C7F66A";   // Electric Lime
 
 await mkdir(OUT, { recursive: true });
 

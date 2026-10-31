@@ -6,31 +6,30 @@ let _desk = { items: [], i: 0 };
 
 // ── Appearance ──
 //
-// Three states, not two: "auto" follows the OS and is the default, so the
-// dashboard matches the rest of your machine until you deliberately override
-// it. Stored per-browser; nothing is sent anywhere.
+// PLUGGED's default is LIGHT (Electric Culture — editorial, premium); dark is a
+// deliberate toggle, not an OS-driven switch. Stored per-browser; nothing is
+// sent anywhere.
 
-const THEMES = ['auto', 'light', 'dark'];
+const THEMES = ['light', 'dark'];
 
 function applyTheme(mode) {
   const root = document.documentElement;
-  if (mode === 'auto') root.removeAttribute('data-theme');
-  else root.setAttribute('data-theme', mode);
+  root.setAttribute('data-theme', mode === 'dark' ? 'dark' : 'light');
   const btn = document.getElementById('theme-btn');
   if (btn) btn.textContent = mode;
 }
 
 function cycleTheme() {
-  const now = localStorage.getItem('plugged-theme') || 'auto';
+  const now = localStorage.getItem('plugged-theme') || 'light';
   const next = THEMES[(THEMES.indexOf(now) + 1) % THEMES.length];
   try { localStorage.setItem('plugged-theme', next); } catch { /* private mode */ }
   applyTheme(next);
 }
 
 (function initTheme() {
-  let saved = 'auto';
-  try { saved = localStorage.getItem('plugged-theme') || 'auto'; } catch { /* ignore */ }
-  applyTheme(THEMES.includes(saved) ? saved : 'auto');
+  let saved = 'light';
+  try { saved = localStorage.getItem('plugged-theme') || 'light'; } catch { /* ignore */ }
+  applyTheme(THEMES.includes(saved) ? saved : 'light');
 })();
 
 // ── Utilities ──
